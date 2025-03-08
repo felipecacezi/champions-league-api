@@ -1,104 +1,146 @@
-🚀 my-node-app
-Boilerplate para iniciar projetos Node.js com TypeScript usando Docker.
+#  Projeto Boilerplate Docker + TypeScript
 
-🛠️ Tecnologias Utilizadas
-Node.js + TypeScript
-Docker + Docker Compose
-📦 Instalação
-1. Clone o Repositório
-bash
-Copiar
-Editar
-git clone https://github.com/seu-usuario/my-node-app.git
-cd my-node-app
-2. Instale as Dependências
-bash
-Copiar
-Editar
-npm install
-🐳 Executando com Docker
-1. Construir a Imagem
-bash
-Copiar
-Editar
-docker build -t my-node-app .
-2. Rodar o Contêiner
-bash
-Copiar
-Editar
-docker run -p 3000:3000 my-node-app
-📜 Scripts Disponíveis
-npm run build — Transpila o código TypeScript para JavaScript na pasta dist.
-npm run dev — Executa o projeto em modo de desenvolvimento com recarga automática.
-npm start — Inicia o projeto a partir dos arquivos transpilados.
-🗂️ Estrutura do Projeto
-perl
-Copiar
-Editar
+Este projeto é um boilerplate básico para construir aplicações **Node.js** com **TypeScript** e **Docker**. Ele fornece uma estrutura inicial com configuração otimizada para desenvolvimento e produção.
+
+---
+
+##  Tecnologias Utilizadas
+
+-   **Node.js**
+-   **TypeScript**
+-   **Docker**
+-   **ts-node-dev** (para desenvolvimento)
+
+---
+
+##  Estrutura do Projeto
+
 my-node-app/
 ├── src/
-│   ├── index.ts          # Arquivo principal
-├── dist/                 # Arquivos transpilados
-├── Dockerfile
+│   └── index.ts
+├── dist/
 ├── package.json
+├── package-lock.json
 ├── tsconfig.json
-└── README.md
-🐳 Exemplo de Dockerfile
-Dockerfile
-Copiar
-Editar
-# Etapa 1: Construção
-FROM node:18 AS builder
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm run build
+├── Dockerfile
+└── docker-compose.yml
 
-# Etapa 2: Execução
-FROM node:18
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
-COPY package*.json ./
-RUN npm install --omit=dev
-CMD ["node", "dist/index.js"]
-⚙️ Configuração TypeScript (tsconfig.json)
-json
-Copiar
-Editar
+
+---
+
+##  Scripts Disponíveis
+
+-   **`npm run build`**
+    
+    Compila o código TypeScript para JavaScript na pasta `dist`.
+    
+-   **`npm run dev`**
+    
+    Executa a aplicação em modo desenvolvimento com `ts-node-dev`, reiniciando automaticamente ao detectar mudanças no código.
+    
+-   **`npm run start`**
+    
+    Executa a versão compilada da aplicação a partir da pasta `dist`.
+
+---
+
+##  Executando com Docker
+
+Para rodar a aplicação utilizando Docker, siga os passos abaixo:
+
+1.  **Build da imagem Docker:**
+    
+    ```bash
+    docker build -t my-node-app .
+    ```
+    
+2.  **Executar o container com Docker Compose (recomendado):**
+    
+    ```bash
+    docker-compose up --build
+    ```
+    
+    Ou, se preferir executar diretamente com `docker run`:
+    
+    ```bash
+    docker run -p 3000:3000 my-node-app
+    ```
+
+---
+
+##  Arquivos de Configuração
+
+### `package.json`
+
+```json
 {
-  "compilerOptions": {
-    "target": "ES2020",
-    "module": "CommonJS",
-    "outDir": "dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true
+  "name": "my-node-app",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "dev": "npx ts-node-dev --respawn src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.0.0"
   }
 }
-🛡️ Boa Prática: .dockerignore
-bash
-Copiar
-Editar
-node_modules
-dist
-🛠️ Para Desenvolver
-Use npm run dev para desenvolvimento contínuo.
-Altere os arquivos em src/ e veja as mudanças sem precisar recompilar manualmente.
-🖥️ Acessando a Aplicação
-Após rodar o contêiner, acesse:
+docker-compose.yml
+YAML
 
-arduino
-Copiar
-Editar
-http://localhost:3000
-🧩 Contribuição
-Faça um fork do projeto.
-Crie uma branch para sua feature (git checkout -b feature/nova-feature).
-Faça o commit (git commit -m 'Adiciona nova feature').
-Faça o push para a branch (git push origin feature/nova-feature).
-Abra um Pull Request.
-📜 Licença
-Este projeto está sob a licença MIT. Veja o arquivo LICENSE para mais detalhes.
+version: '3.9'
 
-Feito com ❤️ por Felipe Cacezi 🚀
+services:
+  app:
+    build: .
+    container_name: championsApi
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    command: npm run dev
+Dockerfile
+Dockerfile
+
+# Etapa 1: Build
+FROM node:20-alpine AS builder
+
+# Definir diretório de trabalho
+WORKDIR /app
+
+# Copiar package.json e package-lock.json antes para otimizar cache
+COPY package*.json ./
+
+# Instalar dependências
+RUN npm install
+
+# Copiar todos os arquivos do projeto
+COPY . .
+
+# **Garantir que a pasta src exista e tenha arquivos**
+RUN ls -la src
+
+# Compilar o TypeScript
+RUN npx tsc
+
+# Etapa 2: Runtime
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Copiar apenas os arquivos compilados e node_modules
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/node_modules ./node_modules
+COPY package.json ./
+
+EXPOSE 3000
+
+CMD ["node", "dist/index.js"]
+Notas
+Certifique-se de que a pasta src e o arquivo src/index.ts existam antes de executar o build do Docker.
+O docker-compose.yml facilita o desenvolvimento, permitindo montar o volume do projeto no container e utilizar o ts-node-dev para hot-reload.
+O Dockerfile é otimizado para produção, copiando apenas os arquivos necessários e utilizando multi-stage builds para reduzir o tamanho da imagem final.
