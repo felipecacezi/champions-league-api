@@ -6,10 +6,11 @@
         "build": "npx tsc",
         "dev": "npx ts-node-dev --respawn src/server.ts",
         "start": "node dist/server.js",
-        "watch": "npx tsc --watch & npx nodemon dist/server.js"
+        "watch": "tsc --watch & node --watch --env-file=.env dist/server.js"
     },
     "dependencies": {
-        "fastify": "^5.2.1"
+        "fastify": "^5.2.1",
+        "firebase": "^11.4.0"
     },
     "devDependencies": {
         "ts-node-dev": "^2.0.0",

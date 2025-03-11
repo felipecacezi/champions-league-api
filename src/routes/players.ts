@@ -1,12 +1,10 @@
 import { FastifyInstance } from 'fastify';
+import { PlayersController } from '../controllers/players';
 
 export default async function players(app: FastifyInstance) {
-
-  app.get('/players', async (req, res) => {
-    res.code(200).send({ 
-        hello: 'world teste',
-    });
-
-  });
-
+  app.get('/players', PlayersController.list);
+  app.get('/player/:id', PlayersController.get);
+  app.post('/player', PlayersController.create);
+  app.put('/player/:id', PlayersController.update);
+  app.delete('/player/:id', PlayersController.delete);
 }
