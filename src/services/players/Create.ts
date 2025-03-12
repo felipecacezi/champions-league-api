@@ -1,5 +1,6 @@
 import { PlayerPost } from "../../interfaces/playerPost";
 import { getAllPlayers } from "../../DAO/players/getAllPlayers";
+import { newPlayer } from "../../DAO/players/newPlayer";
 
 export class Create {
     private data: PlayerPost;
@@ -8,9 +9,18 @@ export class Create {
     }
 
     async validateAlreadyExists() {
-        try {
-            const players = await getAllPlayers();
-            return players;
+        try {            
+            const players: PlayerPost[] = await getAllPlayers();          
+            const arPlayers = Object.values(players);
+            const matchingPlayers = arPlayers.filter((player) => {    
+                return player.age === this.data.age 
+                && player.first_name === this.data.first_name 
+                && player.last_name === this.data.last_name 
+                && player.position === this.data.position 
+                && player.team === this.data.team
+            });
+
+            return matchingPlayers ?? {};
         } catch (error) {
             throw {
                 status: 500,
@@ -21,8 +31,21 @@ export class Create {
     }
 
     async execute() {
-        console.log(this.data);
+        const exists = await this.validateAlreadyExists();        
         
-        return {};
+        if (exists.length > 0) {
+            throw {
+                status: 400,
+                success: false,
+                message: "Jogador já cadastrado."
+            }
+        }
+
+        const created = await newPlayer(this.data);
+
+        return {
+            uuid: created,
+            ...this.data
+        }
     }
 }

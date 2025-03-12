@@ -7,14 +7,13 @@ export class PlayersController {
         try {
             const create = new Create(request.body);  
             const responseCreate = await create.execute();    
-            console.log('teste')
             reply.status(201).send({ 
                 success: true, 
                 message: "Jogador criado com sucesso.", 
                 data: responseCreate
             });      
-        } catch (error: any) {
-            reply.send(error.status).send({ 
+        } catch (error: any) {                
+            reply.status(error.status).send({ 
                 success: error.success, 
                 message: error.message ?? "Ocorreu um erro desconhecido ao criar um novo jogador.", 
                 data: []
