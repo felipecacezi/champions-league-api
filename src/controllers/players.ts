@@ -64,12 +64,11 @@ export class PlayersController {
     static async update(request: any, reply: any){
         try {
             const update = new Update(request.params.id, request.body);  
-            const responseDelete = await update.execute();    
-            return false;
+            const responseUpdate = await update.execute();  
             reply.status(200).send({ 
                 success: true, 
                 message: "Jogador excluído com sucesso.", 
-                data: responseDelete
+                data: responseUpdate
             });      
         } catch (error: any) {                
             reply.status(error.status).send({ 

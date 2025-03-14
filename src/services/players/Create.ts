@@ -10,18 +10,23 @@ export class Create {
 
     async validateAlreadyExists() {
         try {            
-            const players: PlayerPost[] = await getAllPlayers();          
-            const arPlayers = Object.values(players);
-            const matchingPlayers = arPlayers.filter((player) => {    
-                return player.age === this.data.age 
-                && player.first_name === this.data.first_name 
-                && player.last_name === this.data.last_name 
-                && player.position === this.data.position 
-                && player.team === this.data.team
-            });
+            const players: PlayerPost[] = await getAllPlayers();   
+            let matchingPlayers: PlayerPost[] = [];
+            if (players) {
+                const arPlayers = Object.values(players);
+                matchingPlayers = arPlayers.filter((player) => {    
+                    return player.age === this.data.age 
+                    && player.first_name === this.data.first_name 
+                    && player.last_name === this.data.last_name 
+                    && player.position === this.data.position 
+                    && player.team === this.data.team
+                });
+            }
 
             return matchingPlayers ?? {};
         } catch (error) {
+            console.log(error);
+            return
             throw {
                 status: 500,
                 success: false,

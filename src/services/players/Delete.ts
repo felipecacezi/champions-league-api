@@ -24,8 +24,5 @@ export class Delete {
         if (validation) {
             return deletePlayer(this.playerId);
         }
-        return {
-            player: this.objPlayer,
-        }
     }
 }
