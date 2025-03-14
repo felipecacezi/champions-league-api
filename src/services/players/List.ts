@@ -1,5 +1,6 @@
 import { getAllPlayers } from "../../DAO/players/getAllPlayers";
 import { Player } from "../../interfaces/player";
+import { getPlayerByKey } from "../../DAO/players/getPlayerByKey";
 
 export class List {
     private data: any;
@@ -26,6 +27,10 @@ export class List {
         });
     }
 
+    private async filterByKey(value: string){
+        return await getPlayerByKey(parseInt(value));
+    }
+
     async execute(all: boolean = true) {
         if (all) {
             return getAllPlayers();
@@ -35,6 +40,10 @@ export class List {
 
     async filterPlayer(parameter: string, value: string) {
         try {            
+            if (parameter == 'key') {
+                this.data = await this.filterByKey(value);
+            }
+
             const players = await getAllPlayers();          
             const arPlayers = Object.values(players);
             
