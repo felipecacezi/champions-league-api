@@ -27,8 +27,8 @@ export class List {
         });
     }
 
-    private async filterByKey(value: string){
-        return await getPlayerByKey(parseInt(value));
+    private async filterByKey(value: string){        
+        return await getPlayerByKey(value);
     }
 
     async execute(all: boolean = true) {
@@ -42,6 +42,7 @@ export class List {
         try {            
             if (parameter == 'key') {
                 this.data = await this.filterByKey(value);
+                return true;
             }
 
             const players = await getAllPlayers();          
