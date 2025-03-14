@@ -3,8 +3,7 @@ import { deletePlayer } from "../../DAO/players/deletePlayer";
 
 export class Delete {
     private playerId: number;
-    private objPlayer: any;
-    constructor(private playerId: number) {
+    constructor(playerId: number) {
         this.playerId = playerId;
     }
 
@@ -15,7 +14,6 @@ export class Delete {
         if (players.length == 0) {
             throw { status: 404, success: false, message: "Jogador não encontrado." };
         }
-        this.objPlayer = players;
         return true;
     }
 

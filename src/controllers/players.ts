@@ -1,11 +1,13 @@
 import { FastifyRequest, FastifyReply } from "fastify";
+
 import { Create } from '../services/players/Create';
 import { List } from '../services/players/List';
 import { Delete } from "../services/players/Delete";
 import { Update } from "../services/players/Update";
+import { Player } from "../DTO/player";
 
 export class PlayersController {
-    static async list(request: any, reply: any){
+    static async list(request: FastifyRequest, reply: FastifyReply){
         try {
             const list = new List();
             const responseList = await list.execute();
@@ -43,7 +45,7 @@ export class PlayersController {
         }
     }
 
-    static async create(request: any, reply: any){
+    static async create(request: FastifyRequest<{body: Player}>, reply: FastifyReply){
         try {
             const create = new Create(request.body);  
             const responseCreate = await create.execute();    
@@ -61,7 +63,7 @@ export class PlayersController {
         }        
     }
 
-    static async update(request: any, reply: any){
+    static async update(request: FastifyRequest<{body: Player, Params: { id: number }}>, reply: FastifyReply){
         try {
             const update = new Update(request.params.id, request.body);  
             const responseUpdate = await update.execute();  
@@ -79,7 +81,7 @@ export class PlayersController {
         }
     }
 
-    static async delete(request: any, reply: any){
+    static async delete(request: FastifyRequest<{Params: { id: number }}>, reply: FastifyReply){
         try {
             const delete_ = new Delete(request.params.id);  
             const responseDelete = await delete_.execute();    

@@ -1,17 +1,17 @@
-import { PlayerPost } from "../../interfaces/playerPost";
+import { Player } from "../../DTO/player";
 import { getAllPlayers } from "../../DAO/players/getAllPlayers";
 import { newPlayer } from "../../DAO/players/newPlayer";
 
 export class Create {
-    private data: PlayerPost;
-    constructor(data: PlayerPost) {
+    private data: Player;
+    constructor(data: Player) {
         this.data = data;
     }
 
     async validateAlreadyExists() {
         try {            
-            const players: PlayerPost[] = await getAllPlayers();   
-            let matchingPlayers: PlayerPost[] = [];
+            const players: Player[] = await getAllPlayers();   
+            let matchingPlayers: Player[] = [];
             if (players) {
                 const arPlayers = Object.values(players);
                 matchingPlayers = arPlayers.filter((player) => {    
@@ -25,8 +25,6 @@ export class Create {
 
             return matchingPlayers ?? {};
         } catch (error) {
-            console.log(error);
-            return
             throw {
                 status: 500,
                 success: false,

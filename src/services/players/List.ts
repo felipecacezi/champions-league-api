@@ -1,9 +1,9 @@
 import { getAllPlayers } from "../../DAO/players/getAllPlayers";
-import { Player } from "../../interfaces/player";
+import { Player } from "../../DTO/player";
 import { getPlayerByKey } from "../../DAO/players/getPlayerByKey";
 
 export class List {
-    private data: any;
+    private data: Player[] | null = null;
     constructor(){}
 
     private async filterByName(arPlayers: any[], value: string){
