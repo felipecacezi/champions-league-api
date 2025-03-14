@@ -1,6 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { Create } from '../services/players/Create';
 import { List } from '../services/players/List';
+import { Delete } from "../services/players/Delete";
+import { Update } from "../services/players/Update";
 
 export class PlayersController {
     static async list(request: any, reply: any){
@@ -58,6 +60,41 @@ export class PlayersController {
             });
         }        
     }
-    static async update(){}
-    static async delete(){}
+
+    static async update(request: any, reply: any){
+        try {
+            const update = new Update(request.params.id, request.body);  
+            const responseDelete = await update.execute();    
+            return false;
+            reply.status(200).send({ 
+                success: true, 
+                message: "Jogador excluído com sucesso.", 
+                data: responseDelete
+            });      
+        } catch (error: any) {                
+            reply.status(error.status).send({ 
+                success: error.success, 
+                message: error.message ?? "Ocorreu um erro desconhecido ao excluir o jogador.", 
+                data: []
+            });
+        }
+    }
+
+    static async delete(request: any, reply: any){
+        try {
+            const delete_ = new Delete(request.params.id);  
+            const responseDelete = await delete_.execute();    
+            reply.status(200).send({ 
+                success: true, 
+                message: "Jogador excluído com sucesso.", 
+                data: responseDelete
+            });      
+        } catch (error: any) {                
+            reply.status(error.status).send({ 
+                success: error.success, 
+                message: error.message ?? "Ocorreu um erro desconhecido ao excluir o jogador.", 
+                data: []
+            });
+        }     
+    }
 }
