@@ -66,5 +66,5 @@ export class List {
                 message: "Ocorreu um erro desconhecido ao filtrar os jogadores."
             }
         }
-}
+    }
 }
